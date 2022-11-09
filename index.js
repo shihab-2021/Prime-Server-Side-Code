@@ -130,6 +130,13 @@ async function run() {
       res.send(result);
     });
 
+    // and user follow and following api end here
+    app.get("/users-data", async (req, res) => {
+      const user = usersCollection.find({});
+      const result = await user.toArray();
+      res.send(result);
+    });
+
     // users information by email
     app.get("/users/:email", async (req, res) => {
       const email = req.params.email;
