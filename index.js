@@ -25,14 +25,124 @@ async function run() {
     const usersCollection = database.collection("users");
     const blogCollection = database.collection("blogs");
 
-    // for getting users
+    // user post api
+    app.post("/users", async (req, res) => {
+      const cursor = await usersCollection.insertOne(req.body);
+      res.json(cursor);
+    });
+
+    // users when the first time register put api
+    app.put("/users", async (req, res) => {
+      const query = { email: req.body.email };
+      const options = { upsert: true };
+      const updateDocs = { $set: req.body };
+
+      // getting user info if already have in the db
+      const userInfo = await usersCollection.findOne(query);
+      if (userInfo) {
+        res.send("already in the db ");
+      } else {
+        const result = await usersCollection.updateOne(
+          query,
+          updateDocs,
+          options
+        );
+      }
+    });
+    // put user for google login
+    app.put("/users", async (req, res) => {
+      const user = req.body;
+      const filter = { email: user.email };
+      const options = { upsert: true };
+      const updateDoc = { $set: user };
+      const result = await usersCollection.updateOne(
+        filter,
+        updateDoc,
+        options
+      );
+      res.json(result);
+    });
+
+    // user profile update api here
+    app.put("/profile-update", async (req, res) => {
+      const query = { email: req.body.email };
+      const options = { upsert: true };
+      const updateDocs = { $set: req.body };
+      const result = await usersCollection.updateOne(
+        query,
+        updateDocs,
+        options
+      );
+      res.json(result);
+    });
+
+    // users follow and following api start here
+    app.put("/user", async (req, res) => {
+      const bloggerId = req.body.bloggerId;
+      const userId = req.body.userId;
+      const options = { upsert: true };
+
+      // getting blogger info here
+      const blogger = await usersCollection.findOne({
+        _id: ObjectId(bloggerId),
+      });
+      const bloggerPayload = {
+        id: blogger?._id,
+        email: blogger?.email,
+        name: blogger?.displayName,
+        image: blogger?.image,
+      };
+      // getting user info here
+      const user = await usersCollection.findOne({ _id: ObjectId(userId) });
+      const userPayload = {
+        id: user?._id,
+        email: user?.email,
+        name: user?.displayName,
+        image: user?.image,
+      };
+
+      // update blogger here
+      const bloggerDocs = {
+        $push: { followers: userPayload },
+      };
+      // update user here
+      const userDocs = {
+        $push: { following: bloggerPayload },
+      };
+
+      const updateBlogger = await usersCollection.updateOne(
+        blogger,
+        bloggerDocs,
+        options
+      );
+      const updateUser = await usersCollection.updateOne(
+        user,
+        userDocs,
+        options
+      );
+      res.send("followers following updated");
+    });
+
+    // and user follow and following api end here
     app.get("/users", async (req, res) => {
       const user = usersCollection.find({});
       const result = await user.toArray();
       res.send(result);
     });
 
-    // for getting all blog 
+    // users information by email
+    app.get("/users/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const user = await usersCollection.findOne(query);
+      // let isAdmin = false;
+      // if (user?.role === "admin") {
+      //   isAdmin = true;
+      // }
+      res.json(user);
+    });
+
+    // for getting all blog
     app.get("/blogs", async (req, res) => {
       const cursor = blogCollection?.find({});
       const blogs = await cursor?.toArray();
@@ -52,6 +162,34 @@ async function run() {
       const cursor = await blogCollection?.findOne(query);
       res.json(cursor);
       console.log(cursor);
+    });
+
+    // blog delete api
+    app.delete("/blog/:id", async (req, res) => {
+      const query = { _id: ObjectId(req?.params?.id) };
+      const result = await blogCollection?.deleteOne(query);
+      res.json(result);
+    });
+
+    // for updating the blog || adding comment
+    app.put("/blog/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updateDocs = {
+        $push: { comment: req?.body },
+      };
+      const result = await blogCollection.updateOne(query, updateDocs, options);
+    });
+
+    // reporting blog
+    app.put("/blog/:id/reportBlog", async (req, res) => {
+      const query = { _id: ObjectId(req?.params?.id) };
+      const updateDocs = {
+        $push: { reports: req.body },
+      };
+      const result = await blogCollection.updateOne(query, updateDocs);
+      console.log(result);
     });
   } finally {
     // await client.close()
