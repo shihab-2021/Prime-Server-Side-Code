@@ -7,6 +7,7 @@
   "license": "MIT",
   "scripts":{
     "start": "node index.js",
+    "build": "node index.js",
     "start-dev": "nodemon index.js",
     "test": "echo \"Error: no text specified\" && exit 1"
   },

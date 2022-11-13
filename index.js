@@ -32,36 +32,36 @@ async function run() {
     });
 
     // users when the first time register put api
-    // app.put("/users", async (req, res) => {
-    //   const query = { email: req.body.email };
-    //   const options = { upsert: true };
-    //   const updateDocs = { $set: req.body };
-
-    //   // getting user info if already have in the db
-    //   const userInfo = await usersCollection.findOne(query);
-    //   if (userInfo) {
-    //     res.send("already in the db ");
-    //   } else {
-    //     const result = await usersCollection.updateOne(
-    //       query,
-    //       updateDocs,
-    //       options
-    //     );
-    //   }
-    // });
-    // put user for google login
     app.put("/users", async (req, res) => {
-      const user = req.body;
-      const filter = { email: user.email };
+      const query = { email: req.body.email };
       const options = { upsert: true };
-      const updateDoc = { $set: user };
-      const result = await usersCollection.updateOne(
-        filter,
-        updateDoc,
-        options
-      );
-      res.json(result);
+      const updateDocs = { $set: req.body };
+
+      // getting user info if already have in the db
+      const userInfo = await usersCollection.findOne(query);
+      if (userInfo) {
+        res.send("already in the db ");
+      } else {
+        const result = await usersCollection.updateOne(
+          query,
+          updateDocs,
+          options
+        );
+      }
     });
+    // put user for google login
+    // app.put("/users", async (req, res) => {
+    //   const user = req.body;
+    //   const filter = { email: user.email };
+    //   const options = { upsert: true };
+    //   const updateDoc = { $set: user };
+    //   const result = await usersCollection.updateOne(
+    //     filter,
+    //     updateDoc,
+    //     options
+    //   );
+    //   res.json(result);
+    // });
 
     // user profile update api here
     app.put("/profile-update", async (req, res) => {
