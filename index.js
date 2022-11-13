@@ -206,7 +206,7 @@ run().catch(console.dir);
 
 app.get("/", (req, res) => {
   res.send(
-    `<h1 style="color:Tomato; text-align: center; padding: 50px;">Welcome to Prime server side!!!</h1><div style="padding: 50px; "><h2>Prime team members:</h2><h3>C193069 - Shajibul Alam Shihab</h3><h3>C193048 - Tanvir Hasan Sohan</h3><h3>C193071 - Muhtakim Safat Mishon</h3></div>`
+    `<h1 style="color:Tomato; text-align: center; padding: 50px;">Welcome to Prime server side!!!</h1><div style="padding: 50px; "><h2>Prime team members:</h2><h3>C193069 - Shajibul Alam Shihab</h3><h3>C193048 - Tanvir Hasan Sohan</h3><h3>C193071 - Muhtakim Safat Mishon</h3><p>Links of API in down below:</p></div>`
   );
 });
 
