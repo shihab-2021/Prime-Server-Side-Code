@@ -26,13 +26,13 @@ async function run() {
     const blogCollection = database.collection("blogs");
 
     // user post api
-    app.post("/users", async (req, res) => {
+    app.post("/users-data", async (req, res) => {
       const cursor = await usersCollection.insertOne(req.body);
       res.json(cursor);
     });
 
     // users when the first time register put api
-    app.put("/users", async (req, res) => {
+    app.put("/users-data", async (req, res) => {
       const query = { email: req.body.email };
       const options = { upsert: true };
       const updateDocs = { $set: req.body };
@@ -49,8 +49,9 @@ async function run() {
         );
       }
     });
+    
     // put user for google login
-    app.put("/users", async (req, res) => {
+    app.put("/users-data", async (req, res) => {
       const user = req.body;
       const filter = { email: user.email };
       const options = { upsert: true };
