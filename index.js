@@ -150,11 +150,12 @@ async function run() {
       res.json(user);
     });
 
-    // for single user
-    app.get("/users/:id", async (req, res) => {
+    // for single blog
+    app.get("/blogger/:id", async (req, res) => {
       const query = { _id: ObjectId(req?.params?.id) };
       const cursor = await usersCollection?.findOne(query);
       res.json(cursor);
+      console.log(cursor);
     });
 
     // for getting all blog
