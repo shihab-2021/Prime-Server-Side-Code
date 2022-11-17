@@ -49,7 +49,7 @@ async function run() {
         );
       }
     });
-    
+
     // put user for google login
     app.put("/users-data", async (req, res) => {
       const user = req.body;
@@ -142,12 +142,19 @@ async function run() {
     app.get("/users/:email", async (req, res) => {
       const email = req.params.email;
       const query = { email: email };
-      const user = await usersCollection.findOne(query);
+      const user = await usersCollection?.findOne(query);
       // let isAdmin = false;
       // if (user?.role === "admin") {
       //   isAdmin = true;
       // }
       res.json(user);
+    });
+
+    // for single user
+    app.get("/users/:id", async (req, res) => {
+      const query = { _id: ObjectId(req?.params?.id) };
+      const cursor = await usersCollection?.findOne(query);
+      res.json(cursor);
     });
 
     // for getting all blog
@@ -193,11 +200,12 @@ async function run() {
     // reporting blog
     app.put("/blog/:id/reportBlog", async (req, res) => {
       const query = { _id: ObjectId(req?.params?.id) };
+      const options = { upsert: true };
       const updateDocs = {
         $push: { reports: req.body },
       };
-      const result = await blogCollection.updateOne(query, updateDocs);
-      console.log(result);
+      const result = await blogCollection.updateOne(query, updateDocs, options);
+      console.log(result, query, options, updateDocs);
     });
   } finally {
     // await client.close()
