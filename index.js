@@ -24,6 +24,7 @@ async function run() {
     const database = client.db("Prime");
     const usersCollection = database.collection("users");
     const blogCollection = database.collection("blogs");
+    const questionCollection = database.collection("questions");
 
     // user post api
     app.post("/users-data", async (req, res) => {
@@ -207,6 +208,44 @@ async function run() {
       };
       const result = await blogCollection.updateOne(query, updateDocs, options);
       console.log(result, query, options, updateDocs);
+    });
+
+    // for posting Questions
+    app.post("/questions", async (req, res) => {
+      const question = req.body;
+      const result = await questionCollection.insertOne(question);
+      console.log(result);
+      res.json(result);
+    });
+
+    // for getting all question
+    app.get("/questions", async (req, res) => {
+      const cursor = questionCollection.find({});
+      const questions = await cursor.toArray();
+      res.json(questions);
+    });
+
+    // for single question
+    app.get("/questions/:id", async (req, res) => {
+      const query = { _id: ObjectId(req.params.id) };
+      const cursor = await questionCollection.findOne(query);
+      res.json(cursor);
+    });
+
+    // for updating the question || adding answer
+    app.put("/question/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updateDocs = {
+        $push: { answers: req.body },
+      };
+      const result = await questionCollection.updateOne(
+        query,
+        updateDocs,
+        options
+      );
+      console;
     });
   } finally {
     // await client.close()
