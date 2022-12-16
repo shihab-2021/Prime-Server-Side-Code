@@ -5,6 +5,9 @@
   "main": "index.js",
   "author": "Prime (Shihab, Sohan, Mishon)",
   "license": "MIT",
+  "engines": {
+    "node": "18.x"
+  },
   "scripts": {
     "start": "node index.js",
     "start-dev": "nodemon index.js",

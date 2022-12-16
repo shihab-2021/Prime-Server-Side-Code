@@ -140,7 +140,7 @@ async function run() {
     });
 
     // users information by email
-    app.get("/users/:email", async (req, res) => {
+    app.get("/users-data/:email", async (req, res) => {
       const email = req.params.email;
       const query = { email: email };
       const user = await usersCollection?.findOne(query);
@@ -245,7 +245,8 @@ async function run() {
         updateDocs,
         options
       );
-      console;
+      res.send(result);
+      console.log(result);
     });
   } finally {
     // await client.close()
