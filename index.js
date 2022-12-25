@@ -182,7 +182,7 @@ async function run() {
     });
 
     // blog delete api
-    app.delete("/blog/:id", async (req, res) => {
+    app.delete("/delete-blog/:id", async (req, res) => {
       const query = { _id: ObjectId(req?.params?.id) };
       const result = await blogCollection?.deleteOne(query);
       res.json(result);
