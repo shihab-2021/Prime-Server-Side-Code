@@ -232,8 +232,8 @@ async function run() {
       const cursor = await questionCollection.findOne(query);
       res.json(cursor);
     });
-      //add message
-    app.post('/messages', async (req, res) => {
+    //add message
+    app.post("/messages", async (req, res) => {
       const message = req.body;
       const result = await messagesCollection.insertOne(message);
       res.send(result);
@@ -244,6 +244,12 @@ async function run() {
       const user = messagesCollection.find({});
       const result = await user.toArray();
       res.send(result);
+    });
+    // message delete api
+    app.delete("/delete-message/:id", async (req, res) => {
+      const query = { _id: ObjectId(req?.params?.id) };
+      const result = await messagesCollection?.deleteOne(query);
+      res.json(result);
     });
 
     // for updating the question || adding answer
