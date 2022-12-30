@@ -25,6 +25,7 @@ async function run() {
     const usersCollection = database.collection("users");
     const blogCollection = database.collection("blogs");
     const questionCollection = database.collection("questions");
+    const messagesCollection = database.collection("messageDetails");
 
     // user post api
     app.post("/users-data", async (req, res) => {
@@ -230,6 +231,19 @@ async function run() {
       const query = { _id: ObjectId(req.params.id) };
       const cursor = await questionCollection.findOne(query);
       res.json(cursor);
+    });
+      //add message
+    app.post('/messages', async (req, res) => {
+      const message = req.body;
+      const result = await messagesCollection.insertOne(message);
+      res.send(result);
+      // res.json(result);
+    });
+    //get messages
+    app.get("/messages", async (req, res) => {
+      const user = messagesCollection.find({});
+      const result = await user.toArray();
+      res.send(result);
     });
 
     // for updating the question || adding answer
