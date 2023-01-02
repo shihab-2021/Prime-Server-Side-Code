@@ -157,6 +157,13 @@ async function run() {
       res.json(result);
     });
 
+    // blog delete api
+    app.delete("/delete-user/:id", async (req, res) => {
+      const query = { _id: ObjectId(req?.params?.id) };
+      const result = await usersCollection?.deleteOne(query);
+      res.json(result);
+    });
+
     // for single blog
     app.get("/blogger/:id", async (req, res) => {
       const query = { _id: ObjectId(req?.params?.id) };
